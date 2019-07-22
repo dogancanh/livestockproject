@@ -1,0 +1,123 @@
+import java.util.ArrayList;
+
+
+//Subject ==> Cattle
+abstract class Cattle {
+    protected String _state;
+    protected int _cond;
+    protected ArrayList<Farmer> farmers = new ArrayList<Farmer>();
+    public Cattle(String state,int cond)
+    {
+        _state = state;
+        _cond = cond;
+    }
+    public String getState()
+    {
+        return _state;
+    }
+    void setState(String value)
+    {
+        _state = value;
+    }
+    public int getCond()
+    {
+        return 0;
+    }
+    abstract public void setCond(int value);
+
+    // REGISTERATION FOR MORE FARMERS...
+    public void Attach (Farmer farmer) {
+        farmers.add(farmer);
+    }
+    // UNREGISTERATION IF THERE IS MORE THAN 1 FARMER...
+    public void Detach (Farmer farmer) {
+        for (int i = 0; i< farmers.size(); i++) {
+            if (farmers.get(i).getName() == farmer.getName()) {
+                farmers.remove(i);
+                return;
+            }
+        }
+    }
+    // OBSERVER NOTIFICATION...
+    public void Notify() {
+
+        System.out.println("Notifying to all farmers when cattle is escaping...");
+        if(_cond==1)
+        {
+            System.out.println("Cattle is escaping...");
+        }
+        if(_cond==0)
+        {
+            System.out.println("All of cattles are in the farm.");
+        }
+        if(_cond!=0 && _cond!=1)
+        {
+            System.out.println("Please write 1 or 0.");
+        }
+        for (int i = 0; i < farmers.size(); i++) {
+            farmers.get(i).Update(this);
+        }
+
+    }
+
+}
+
+//ConcreteSubject ==> CattleState
+
+class CattleState extends Cattle {
+
+    public CattleState(String state, int cond) {
+        super(state, cond);
+    }
+    public int getCond() {return _cond;}
+    public void setCond(int value) {
+        _cond = value;
+        Notify();
+    }
+}
+interface Observer {
+    public void Update(Cattle observer);
+}
+
+//ConcreteObserver ==> Farmer
+
+class Farmer implements Observer {
+    private Cattle _observer;
+    private String _farmername;
+    private String _statename;
+    private int _condname;
+
+    public Farmer(String name) {
+        _farmername = name;
+    }
+    public void Update(Cattle cattle) {
+        _observer = cattle;
+        _condname = cattle.getCond();
+        _statename = cattle.getState();
+        // DEFINING THE CONDITION IS 1 FOR ESCAPING AND 0 FOR STAYING IN FARM...
+        if (_condname == 1) {
+            System.out.println("Notified " + _farmername + " that one of his cattle is escaping because " +
+                    "his state change to " + _condname);
+        }
+        if (_condname == 0) {
+            System.out.println("Notified " + _farmername + " that not a single cattle escaping because " +
+                    "his state change to " + _condname);
+        }
+    }
+    public Cattle getObserver() { return _observer; }
+    public void setObserver(Cattle state) { _observer = state; }
+    public String getName() { return _farmername; }
+}
+
+//TESTING MAIN
+ class ObserverPattern {
+    public static void main(String[] args) {
+        // CREATING A FARMER...
+        Farmer s = new Farmer("John");
+        CattleState cs = new CattleState("Escaping", 1);
+        s.setObserver(cs);
+        cs.Attach(s);
+        // WE CAN CHANGE THIS CONDITION TO 1 OR 0. 1 FOR ESCAPING , 0 FOR STAYING IN FARM. OTHERWISE WE CANT KNOW ABOUT THE CATTLE IS ESCAPING OR NOT.
+        cs.setCond(1);
+        cs=null;
+    }
