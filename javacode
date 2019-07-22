@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 
 //Subject ==> Cattle
-abstract class Cattle {
+ abstract class Cattle {
     protected String _state;
     protected int _cond;
     protected ArrayList<Farmer> farmers = new ArrayList<Farmer>();
@@ -25,11 +25,11 @@ abstract class Cattle {
     }
     abstract public void setCond(int value);
 
-    // REGISTERATION FOR MORE FARMERS...
+// REGISTERATION FOR MORE FARMERS...
     public void Attach (Farmer farmer) {
         farmers.add(farmer);
     }
-    // UNREGISTERATION IF THERE IS MORE THAN 1 FARMER...
+// UNREGISTERATION IF THERE IS MORE THAN 1 FARMER...
     public void Detach (Farmer farmer) {
         for (int i = 0; i< farmers.size(); i++) {
             if (farmers.get(i).getName() == farmer.getName()) {
@@ -38,7 +38,7 @@ abstract class Cattle {
             }
         }
     }
-    // OBSERVER NOTIFICATION...
+// OBSERVER NOTIFICATION...
     public void Notify() {
 
         System.out.println("Notifying to all farmers when cattle is escaping...");
@@ -64,7 +64,7 @@ abstract class Cattle {
 
 //ConcreteSubject ==> CattleState
 
-class CattleState extends Cattle {
+ class CattleState extends Cattle {
 
     public CattleState(String state, int cond) {
         super(state, cond);
@@ -75,13 +75,13 @@ class CattleState extends Cattle {
         Notify();
     }
 }
-interface Observer {
+ interface Observer {
     public void Update(Cattle observer);
 }
 
 //ConcreteObserver ==> Farmer
 
-class Farmer implements Observer {
+ class Farmer implements Observer {
     private Cattle _observer;
     private String _farmername;
     private String _statename;
@@ -112,12 +112,12 @@ class Farmer implements Observer {
 //TESTING MAIN
  class ObserverPattern {
     public static void main(String[] args) {
-        // CREATING A FARMER...
+// CREATING A FARMER...
         Farmer s = new Farmer("John");
         CattleState cs = new CattleState("Escaping", 1);
         s.setObserver(cs);
         cs.Attach(s);
-        // WE CAN CHANGE THIS CONDITION TO 1 OR 0. 1 FOR ESCAPING , 0 FOR STAYING IN FARM. OTHERWISE WE CANT KNOW ABOUT THE CATTLE IS ESCAPING OR NOT.
+// WE CAN CHANGE THIS CONDITION TO 1 OR 0. 1 FOR ESCAPING , 0 FOR STAYING IN FARM. OTHERWISE WE CANT KNOW ABOUT THE CATTLE IS ESCAPING OR NOT.
         cs.setCond(1);
         cs=null;
     }
